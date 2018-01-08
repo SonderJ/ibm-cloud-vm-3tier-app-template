@@ -22,7 +22,7 @@ runcmd:
   - echo "Tomcat Password  -  $TOMCATPASS" >> /root/tomcat
   - echo -e "\nAccess the managment interface at http://localhost:8080/manager/html" >> /root/tomcat
   - mv /home/root/tomcat-users.xml /usr/share/tomcat/conf/tomcat-users.xml
-  - wget https://raw.githubusercontent.com/invhariharan77/test/master/DBSystelClusterApp.war
+  - wget https://raw.githubusercontent.com/dbsibmpoc1/ibm-cloud-vm-3tier-app-template-/master/DBSystelClusterApp.war
   - unzip DBSystelClusterApp.war -d /var/lib/tomcat/webapps/DBSystelClusterApp
   - sed -i -e "s/MYSQL_PRIVATE_IP/${TF_MYSQL_PRIVATE_IP}/" /var/lib/tomcat/webapps/DBSystelClusterApp/WEB-INF/classes/db.properties
   - systemctl start tomcat
