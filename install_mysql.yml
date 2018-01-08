@@ -1,0 +1,8 @@
+#cloud-config
+packages:
+  - mariadb-server
+  - mariadb
+runcmd:
+  - systemctl start mariadb
+  - systemctl enable mariadb.service
+  - mysql -e "create database DBSystel; use DBSystel; grant all on DBSystel.* to 'admin'@'%' identified by 'test'; create table DBSystel.cluster_data (nodeid int NOT NULL AUTO_INCREMENT, nodecolor char(10), inuse char(1) DEFAULT 'N', hostname varchar(45) DEFAULT NULL, ipaddress varchar(45) DEFAULT NULL, requests int, PRIMARY KEY (nodeid)) ENGINE=InnoDB DEFAULT CHARSET=utf8; insert into DBSystel.cluster_data(nodecolor, requests) values('SKYBLUE', 0); insert into DBSystel.cluster_data(nodecolor, requests) values('PALEGREEN', 0); insert into DBSystel.cluster_data(nodecolor, requests) values('TAN', 0); insert into DBSystel.cluster_data(nodecolor, requests) values('LIGHTSALMON', 0); grant all privileges on *.* to 'admin'@'%' identified by 'test' with grant option; flush privileges; commit work; "
