@@ -49,6 +49,14 @@ resource "ibm_security_group_rule" "allow_ssh_access_db" {
     security_group_id = "${ibm_security_group.dbsysteldbsg.id}"
 }
 
+# Security rule for allowing outbound connections from the DB VSI
+resource "ibm_security_group_rule" "allow_outbound_db" {
+    direction = "egress"
+    ether_type = "IPv4"
+    protocol = "tcp"
+    security_group_id = "${ibm_security_group.dbsysteldbsg.id}"
+}
+
 # Security rule for allowing access to web application port
 resource "ibm_security_group_rule" "allow_app_port_8080" {
     direction = "ingress"
@@ -69,10 +77,18 @@ resource "ibm_security_group_rule" "allow_ssh_access" {
     security_group_id = "${ibm_security_group.dbsystelsg.id}"
 }
 
-# Security rule for outbound connectivity to all VSIs
-data "ibm_security_group" "allow_outbound" {
-    name = "allow_outbound"
+# Security rule for allowing outbound connections from the Web VSIs
+resource "ibm_security_group_rule" "allow_outbound_web" {
+    direction = "egress"
+    ether_type = "IPv4"
+    protocol = "tcp"
+    security_group_id = "${ibm_security_group.dbsystelsg.id}"
 }
+
+# Security rule for outbound connectivity to all VSIs
+# data "ibm_security_group" "allow_outbound" {
+#     name = "allow_outbound"
+# }
 
 ##############################################################################
 # Create Resources
@@ -98,7 +114,7 @@ data "template_file" "init" {
 resource "ibm_compute_vm_instance" "dbs-web" {
   # Variable count determines the number of web server instances to be instantiated
   count                    = "${var.webinstances}"
-  
+
   hostname                 = "${var.appname}-web-${format("%02d", count.index + 1)}"
   domain                   = "${var.domain}"
   os_reference_code        = "${var.os_reference_code}"
@@ -141,7 +157,7 @@ resource "ibm_compute_vm_instance" "dbs-db" {
 
   # Associate SSH Key for accessing the VSI. Can be associated with multiple SSH Keys.
   ssh_key_ids              = ["${ibm_compute_ssh_key.ssh_key.id}"]
-  
+
   # Associate security groups
   private_security_group_ids = ["${ibm_security_group.dbsysteldbsg.id}", "${data.ibm_security_group.allow_outbound.id}"]
   public_security_group_ids = ["${ibm_security_group.dbsysteldbsg.id}", "${data.ibm_security_group.allow_outbound.id}"]
