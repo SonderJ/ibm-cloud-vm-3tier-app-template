@@ -34,7 +34,7 @@ variable "domain" {
   description = "Domain for the computing instance."
 }
 variable "datacenter" {
-  default = "fr02"
+  default = "fra02"
   description = "Which data center the VM is to be provisioned in. You can run bluemix cs locations to see a list of all data centers in your region."
 }
 variable "os_reference_code" {
