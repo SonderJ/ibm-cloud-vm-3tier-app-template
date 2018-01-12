@@ -20,7 +20,7 @@ Terraform template for a typical 3-tier app stack containing Apache Tomcat, MySQ
 |softlayer_api_key|Your IBM Cloud Infrastructure (SoftLayer) API key.| |
 |softlayer_username|Your IBM Cloud Infrastructure (SoftLayer) user name.||
 |ssh_key|Your public SSH key to use for access to virtual machine.||
-|ssh_label|An identifying label to assign to the SSH key.|public ssh key - Schematics VM|
-|ssh_notes|Notes to store with the SSH key.||
+|ssh_label|An identifying label to assign to the SSH key.|Admin Key|
+|ssh_notes|Notes to store with the SSH key.|SSH Key for the Administrator|
 |ssh_user|The provisioning user name.|root|
 |tags|Set tags on the VM instance.||
