@@ -53,7 +53,6 @@ resource "ibm_security_group_rule" "allow_ssh_access_db" {
 resource "ibm_security_group_rule" "allow_outbound_db" {
     direction = "egress"
     ether_type = "IPv4"
-    protocol = "tcp"
     security_group_id = "${ibm_security_group.dbsysteldbsg.id}"
 }
 
@@ -81,7 +80,6 @@ resource "ibm_security_group_rule" "allow_ssh_access" {
 resource "ibm_security_group_rule" "allow_outbound_web" {
     direction = "egress"
     ether_type = "IPv4"
-    protocol = "tcp"
     security_group_id = "${ibm_security_group.dbsystelsg.id}"
 }
 

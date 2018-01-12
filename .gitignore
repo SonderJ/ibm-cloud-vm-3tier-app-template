@@ -2,6 +2,7 @@
 *.tfstate
 *.tfstate.backup
 *.keys
+terraform.tfvars
 
 # Module directory
 .terraform/
