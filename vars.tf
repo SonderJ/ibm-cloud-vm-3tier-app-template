@@ -62,7 +62,7 @@ variable "network_speed" {
   description = "The connection speed (in Mbps) for the instance’s network components."
 }
 variable "tags" {
-  default = ""
+  default = "dbsystel"
   description = "Set tags on the VM instance."
 }
 variable "ssh_user" {
@@ -70,11 +70,11 @@ variable "ssh_user" {
   description = "The default user for the VM."
 }
 variable "ssh_label" {
-  default = "public ssh key - Schematics VM"
+  default = "Admin Key"
   description = "An identifying label to assign to the SSH key."
 }
 variable "ssh_notes" {
-  default = ""
+  default = "SSH Key for Administrator"
   description = "Notes to store with the SSH key."
 }
 variable "ssh_key" {
