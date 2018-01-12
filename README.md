@@ -23,4 +23,4 @@ Terraform template for a typical 3-tier app stack containing Apache Tomcat, MySQ
 |ssh_label|An identifying label to assign to the SSH key.|Admin Key|
 |ssh_notes|Notes to store with the SSH key.|SSH Key for the Administrator|
 |ssh_user|The provisioning user name.|root|
-|tags|Set tags on the VM instance.||
+|tags|Set tags on the VM instance.|dbsystel|
