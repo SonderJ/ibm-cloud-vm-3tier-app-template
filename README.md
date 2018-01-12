@@ -9,7 +9,7 @@ Terraform template for a typical 3-tier app stack containing Apache Tomcat, MySQ
 |webinstances|Number of web application instances to be deployed|2|
 |webapp_port|Web application port|8080|
 |cores|The number of CPU cores to allocate.|1|
-|datacenter|Which data center the VM is to be provisioned in.|wdc01|
+|datacenter|Which data center the VM is to be provisioned in.|fra02|
 |disk_size|Numeric disk sizes in GBs.|25|
 |domain|Domain for the computing instance.|domain.dev|
 |hostname|Hostname for the computing instance.|hostname|
