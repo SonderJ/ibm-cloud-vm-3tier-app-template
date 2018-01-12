@@ -134,8 +134,8 @@ resource "ibm_compute_vm_instance" "dbs-web" {
   ssh_key_ids              = ["${ibm_compute_ssh_key.ssh_key.id}"]
 
   # Associate security groups
-  private_security_group_ids = ["${ibm_security_group.dbsystelsg.id}", "${data.ibm_security_group.allow_outbound.id}"]
-  public_security_group_ids = ["${ibm_security_group.dbsystelsg.id}", "${data.ibm_security_group.allow_outbound.id}"]
+  private_security_group_ids = ["${ibm_security_group.dbsystelsg.id}"]
+  public_security_group_ids = ["${ibm_security_group.dbsystelsg.id}"]
 }
 
 # Create a DB virtual server instance
@@ -159,8 +159,8 @@ resource "ibm_compute_vm_instance" "dbs-db" {
   ssh_key_ids              = ["${ibm_compute_ssh_key.ssh_key.id}"]
 
   # Associate security groups
-  private_security_group_ids = ["${ibm_security_group.dbsysteldbsg.id}", "${data.ibm_security_group.allow_outbound.id}"]
-  public_security_group_ids = ["${ibm_security_group.dbsysteldbsg.id}", "${data.ibm_security_group.allow_outbound.id}"]
+  private_security_group_ids = ["${ibm_security_group.dbsysteldbsg.id}"]
+  public_security_group_ids = ["${ibm_security_group.dbsysteldbsg.id}"]
 }
 
 # Create a Load Balancer routing traffic to the provisioned web server instances
