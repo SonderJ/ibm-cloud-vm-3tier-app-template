@@ -214,10 +214,10 @@ resource "ibm_lbaas" "lbaas" {
   # Associate the web server instances to the load balancer for routing traffic
   server_instances = [
     {
-      "private_ip_address" = "${ibm_compute_vm_instance.dbs_web_01.0.ipv4_address_private}"
+      "private_ip_address" = "${ibm_compute_vm_instance.dbs_web_01.ipv4_address_private}"
     },
     {
-      "private_ip_address" = "${ibm_compute_vm_instance.dbs_web_02.1.ipv4_address_private}"
+      "private_ip_address" = "${ibm_compute_vm_instance.dbs_web_02.ipv4_address_private}"
     }
   ]
 }
