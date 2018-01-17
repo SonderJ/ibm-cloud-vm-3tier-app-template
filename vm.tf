@@ -19,13 +19,13 @@
 
 # Create security group for web server instances
 resource "ibm_security_group" "dbsystelsg" {
-    name = "dbsystel-sg"
-    description = "setup security group for dbsystel apps"
+    name = "${var.appname}-dbsystel-web-sg"
+    description = "setup security group for dbsystel web apps"
 }
 
 # Create security group for DB server instance
 resource "ibm_security_group" "dbsysteldbsg" {
-    name = "dbsystel-db-sg"
+    name = "${var.appname}-dbsystel-db-sg"
     description = "setup security group for dbsystel db"
 }
 
@@ -37,6 +37,7 @@ resource "ibm_security_group_rule" "allow_db_port_3306" {
     port_range_max = 3306
     protocol = "tcp"
     security_group_id = "${ibm_security_group.dbsysteldbsg.id}"
+    remote_ip = "10.135.249.0/26"
 }
 
 # Security rule for allowing SSH connections to the DB VSI
@@ -47,6 +48,7 @@ resource "ibm_security_group_rule" "allow_ssh_access_db" {
     port_range_max = 22
     protocol = "tcp"
     security_group_id = "${ibm_security_group.dbsysteldbsg.id}"
+    remote_ip = "10.135.249.0/26"
 }
 
 # Security rule for allowing outbound connections from the DB VSI
@@ -64,6 +66,7 @@ resource "ibm_security_group_rule" "allow_app_port_8080" {
     port_range_max = 8080
     protocol = "tcp"
     security_group_id = "${ibm_security_group.dbsystelsg.id}"
+    remote_ip = "10.135.249.0/26"
 }
 
 # Security rule for allowing SSH connections to the Web VSIs
@@ -74,6 +77,7 @@ resource "ibm_security_group_rule" "allow_ssh_access" {
     port_range_max = 22
     protocol = "tcp"
     security_group_id = "${ibm_security_group.dbsystelsg.id}"
+    remote_ip = "10.135.249.0/26"
 }
 
 # Security rule for allowing outbound connections from the Web VSIs
