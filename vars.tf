@@ -46,7 +46,7 @@ variable "cores" {
   description = "The number of CPU cores to allocate."
 }
 variable "memory" {
-  default = "1024"
+  default = "2048"
   description = "The amount of memory to allocate, expressed in MBs."
 }
 variable "disk_size" {
