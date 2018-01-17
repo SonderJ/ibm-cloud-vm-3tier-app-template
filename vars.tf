@@ -21,10 +21,6 @@ variable "appname" {
   default = "app"
   description = "Application name for the stack to be deployed."
 }
-variable "webinstances" {
-  default = "2"
-  description = "Number of web application instances to be deployed"
-}
 variable "webapp_port" {
   default = "8080"
   description = "Web application port"

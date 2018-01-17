@@ -14,18 +14,25 @@
 ################################################################
 
 ##############################################################################
+# Create a unique ID for the resources
+##############################################################################
+resource "random_id" "appid" {
+  byte_length = 4
+}
+
+##############################################################################
 # Create security group
 ##############################################################################
 
 # Create security group for web server instances
 resource "ibm_security_group" "dbsystelsg" {
-    name = "${var.appname}-dbsystel-web-sg"
+    name = "${var.appname}-${random_id.appid.dec}-dbsystel-web-sg"
     description = "setup security group for dbsystel web apps"
 }
 
 # Create security group for DB server instance
 resource "ibm_security_group" "dbsysteldbsg" {
-    name = "${var.appname}-dbsystel-db-sg"
+    name = "${var.appname}-${random_id.appid.dec}-dbsystel-db-sg"
     description = "setup security group for dbsystel db"
 }
 
@@ -108,16 +115,38 @@ data "template_file" "init" {
   template = "${file("install_apache.tpl")}"
 
   vars {
-    TF_MYSQL_PRIVATE_IP = "${ibm_compute_vm_instance.dbs-db.ipv4_address_private}"
+    TF_MYSQL_PRIVATE_IP = "${ibm_compute_vm_instance.dbs_db.ipv4_address_private}"
   }
 }
 
 # Create Web virtual server instances
-resource "ibm_compute_vm_instance" "dbs-web" {
-  # Variable count determines the number of web server instances to be instantiated
-  count                    = "${var.webinstances}"
+resource "ibm_compute_vm_instance" "dbs_web_01" {
+  hostname                 = "${var.appname}-${random_id.appid.dec}-web-01"
+  domain                   = "${var.domain}"
+  os_reference_code        = "${var.os_reference_code}"
+  datacenter               = "${var.datacenter}"
+  network_speed            = "${var.network_speed}"
+  hourly_billing           = true
+  private_network_only     = "${var.private_network_only}"
+  cores                    = "${var.cores}"
+  memory                   = "${var.memory}"
+  disks                    = ["${var.disk_size}"]
+  local_disk               = false
+  dedicated_acct_host_only = true
+  tags                     = ["${var.tags}"]
+  user_metadata            = "${data.template_file.init.rendered}"
 
-  hostname                 = "${var.appname}-web-${format("%02d", count.index + 1)}"
+  # Associate SSH Key for accessing the VSI. Can be associated with multiple SSH Keys.
+  ssh_key_ids              = ["${ibm_compute_ssh_key.ssh_key.id}"]
+
+  # Associate security groups
+  private_security_group_ids = ["${ibm_security_group.dbsystelsg.id}"]
+  public_security_group_ids = ["${ibm_security_group.dbsystelsg.id}"]
+}
+
+# Create Web virtual server instances
+resource "ibm_compute_vm_instance" "dbs_web_02" {
+  hostname                 = "${var.appname}-${random_id.appid.dec}-web-02"
   domain                   = "${var.domain}"
   os_reference_code        = "${var.os_reference_code}"
   datacenter               = "${var.datacenter}"
@@ -141,8 +170,8 @@ resource "ibm_compute_vm_instance" "dbs-web" {
 }
 
 # Create a DB virtual server instance
-resource "ibm_compute_vm_instance" "dbs-db" {
-  hostname                 = "${var.appname}-db"
+resource "ibm_compute_vm_instance" "dbs_db" {
+  hostname                 = "${var.appname}-${random_id.appid.dec}-db"
   domain                   = "${var.domain}"
   os_reference_code        = "${var.os_reference_code}"
   datacenter               = "${var.datacenter}"
@@ -167,7 +196,7 @@ resource "ibm_compute_vm_instance" "dbs-db" {
 
 # Create a Load Balancer routing traffic to the provisioned web server instances
 resource "ibm_lbaas" "lbaas" {
-  name        = "${var.appname}-lb"
+  name        = "${var.appname}-${random_id.appid.dec}-lb"
   description = "Load balancer for ${var.appname}"
   # Uses the default (primary) private subnet for provisioning the load balancer
   subnets     = [1610317]
@@ -185,10 +214,10 @@ resource "ibm_lbaas" "lbaas" {
   # Associate the web server instances to the load balancer for routing traffic
   server_instances = [
     {
-      "private_ip_address" = "${ibm_compute_vm_instance.dbs-web.0.ipv4_address_private}"
+      "private_ip_address" = "${ibm_compute_vm_instance.dbs_web_01.0.ipv4_address_private}"
     },
     {
-      "private_ip_address" = "${ibm_compute_vm_instance.dbs-web.1.ipv4_address_private}"
+      "private_ip_address" = "${ibm_compute_vm_instance.dbs_web_02.1.ipv4_address_private}"
     }
   ]
 }
