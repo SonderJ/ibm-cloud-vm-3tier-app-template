@@ -36,7 +36,7 @@ resource "ibm_security_group" "dbsysteldbsg" {
     description = "setup security group for dbsystel db"
 }
 
-# Security rule for allowing MySQL DB Connections
+# Security rule for allowing MySQL DB Connections for web-01
 resource "ibm_security_group_rule" "allow_db_port_3306" {
     direction = "ingress"
     ether_type = "IPv4"
@@ -44,7 +44,18 @@ resource "ibm_security_group_rule" "allow_db_port_3306" {
     port_range_max = 3306
     protocol = "tcp"
     security_group_id = "${ibm_security_group.dbsysteldbsg.id}"
-    remote_ip = "10.135.249.0/26"
+    remote_ip = "${ibm_compute_vm_instance.dbs_web_01.ipv4_address_private}"
+}
+
+# Security rule for allowing MySQL DB Connections for web-02
+resource "ibm_security_group_rule" "allow_db_port_3306_1" {
+    direction = "ingress"
+    ether_type = "IPv4"
+    port_range_min = 3306
+    port_range_max = 3306
+    protocol = "tcp"
+    security_group_id = "${ibm_security_group.dbsysteldbsg.id}"
+    remote_ip = "${ibm_compute_vm_instance.dbs_web_02.ipv4_address_private}"
 }
 
 # Security rule for allowing SSH connections to the DB VSI
@@ -55,7 +66,7 @@ resource "ibm_security_group_rule" "allow_ssh_access_db" {
     port_range_max = 22
     protocol = "tcp"
     security_group_id = "${ibm_security_group.dbsysteldbsg.id}"
-    remote_ip = "10.135.249.0/26"
+    remote_ip = "10.135.249.14"
 }
 
 # Security rule for allowing outbound connections from the DB VSI
@@ -77,14 +88,14 @@ resource "ibm_security_group_rule" "allow_app_port_8080" {
 }
 
 # Security rule for allowing SSH connections to the Web VSIs
-resource "ibm_security_group_rule" "allow_ssh_access" {
+resource "ibm_security_group_rule" "allow_ssh_access_web" {
     direction = "ingress"
     ether_type = "IPv4"
     port_range_min = 22
     port_range_max = 22
     protocol = "tcp"
     security_group_id = "${ibm_security_group.dbsystelsg.id}"
-    remote_ip = "10.135.249.0/26"
+    remote_ip = "10.135.249.14"
 }
 
 # Security rule for allowing outbound connections from the Web VSIs
@@ -105,7 +116,7 @@ resource "ibm_security_group_rule" "allow_outbound_web" {
 
 # Create a SSH Key
 resource "ibm_compute_ssh_key" "ssh_key" {
-    label = "${var.ssh_label}"
+    label = "${var.ssh_label}-${var.appname}-${random_id.appid.dec}-dbsystel-ssh-key"
     notes = "${var.ssh_notes}"
     public_key = "${var.ssh_key}"
 }
